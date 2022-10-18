@@ -196,10 +196,28 @@ void test_bugs()
     flb_slist_destroy(&list);
 }
 
+void test_dylan()
+{
+    int ret;
+    struct mk_list list;
+    struct flb_slist_entry *e;
+
+    ret = flb_slist_create(&list);
+
+    /* DYLANS BUG */
+    ret = flb_slist_split_string(&list, "$log ^App\\s[0-9]+\\soutput: rails false", ' ', 4);
+    TEST_CHECK(ret == 4);
+    e = flb_slist_entry_get(&list, 2);
+    TEST_CHECK(*e->str == 'f');
+
+    flb_slist_destroy(&list);
+}
+
 TEST_LIST = {
     { "add"         , test_slist_add},
     { "split_string", test_slist_split_string},
     { "split_tokens", test_slist_split_tokens},
     { "bugs"        , test_bugs},
+    { "dylan"       , test_dylan},
     { 0 }
 };
